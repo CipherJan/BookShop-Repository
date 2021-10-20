@@ -1,0 +1,56 @@
+version: '3.5'
+services:
+  mssql:
+    image: "mcr.microsoft.com/mssql/server:2019-latest"
+    container_name: "mssql" 
+    ports: 
+      - "1433:1433"
+    environment:
+    - ACCEPT_EULA=Y
+    - SA_PASSWORD=2wsx2WSX
+    networks:
+    - dev-local
+    restart: always 
+
+  rabbitmq:
+    image: "rabbitmq:3.9-management"
+    hostname: "rabbitmq"
+    container_name: "rabbitmq"
+    restart: always
+    ports: 
+      - "4369:4369"
+      - "5671:5671"
+      - "5672:5672"
+      - "15671:15671"
+      - "15672:15672"
+      - "25672:25672"
+    networks:
+    - dev-local
+
+  elasticsearch:
+    image: "docker.elastic.co/elasticsearch/elasticsearch-oss:7.9.2"
+    container_name: "elasticsearch"
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+    ports: 
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - dev-local
+
+  kibana:
+    image: "docker.elastic.co/kibana/kibana-oss:7.9.2"
+    container_name: "kibana"
+    depends_on:
+      - elasticsearch
+    restart: always
+    ports:
+      - "5601:5601"
+    networks:
+      - dev-local
+
+networks:
+  dev-local:
+    driver: bridge
+    name: dev-local

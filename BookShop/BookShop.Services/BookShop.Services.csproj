@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Remove="Models\**" />
+      <EmbeddedResource Remove="Models\**" />
+      <None Remove="Models\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\BookShop.Core\BookShop.Core.csproj" />
+      <ProjectReference Include="..\BookShop.Infrastructure\BookShop.Infrastructure.csproj" />
+      <ProjectReference Include="..\BookShop.Producer\BookShop.Producer.csproj" />
+    </ItemGroup>
+
+</Project>
