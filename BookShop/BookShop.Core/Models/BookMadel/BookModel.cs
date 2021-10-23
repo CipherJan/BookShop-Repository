@@ -24,6 +24,6 @@ namespace BookShop.Core.Models
             ReleaseDate = book.ReleaseDate;
         }
 
-        private static double GetPrice(Book book, Sale saleStatus) => saleStatus.Equals(Sale.Active) && book.Novelty.Equals(BookNovelty.Old) ? book.DiscountPrice : book.Price;
+        private static double GetPrice(Book book, Sale saleStatus) => saleStatus.Equals(Sale.Active) && book.IsOld() ? book.DiscountPrice : book.Price;
     }
 }

@@ -1,9 +1,8 @@
 ﻿using MassTransit;
 
-namespace BookShop.Bootstrap.Interface
+namespace BookShop.ServiceCollectionExtensions.Interface
 {
     public interface ISecondBus : IBus
     {
-
     }
 }

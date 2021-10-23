@@ -2,6 +2,8 @@
 using JetBrains.Annotations;
 using Quartz;
 using BookShop.Services.Interfaces.Services;
+using System;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BookShop.Jobs
 {
@@ -9,16 +11,18 @@ namespace BookShop.Jobs
     [DisallowConcurrentExecution]
     public class BooksOrderJob : IJob
     {
-        private readonly IShopService _shopService;
+        private readonly IServiceProvider _serviceProvider;
 
-        public BooksOrderJob(IShopService shopService)
+        public BooksOrderJob(IServiceProvider serviceProvider)
         {
-            _shopService = shopService;
+            _serviceProvider = serviceProvider;
         }
         public async Task Execute(IJobExecutionContext context)
         {
-            await _shopService.JobBookOrder();
+            using var scope = _serviceProvider.CreateScope();
+            var shopService = scope.ServiceProvider.GetRequiredService<IShopService>();
+
+            await shopService.JobBookOrder();
         }
     }
-
 }

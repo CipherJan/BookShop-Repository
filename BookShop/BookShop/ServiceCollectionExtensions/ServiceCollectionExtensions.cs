@@ -9,9 +9,9 @@ using Quartz.Impl;
 using Quartz.Spi;
 using BookShop.Consumer;
 using MassTransit.MultiBus;
-using BookShop.Bootstrap.Interface;
+using BookShop.ServiceCollectionExtensions.Interface;
 
-namespace BookShop.Bootstrap
+namespace BookShop.ServiceCollectionExtensions
 {
     internal static class ServiceCollectionExtensions
     {
@@ -29,6 +29,7 @@ namespace BookShop.Bootstrap
                 return new StdSchedulerFactory(properties);
             });
             services.AddSingleton<BooksOrderJob>();
+            services.AddSingleton<MakeBooksOldJob>();
             services.AddHostedService<LibraryHostedService>();
 
             return services;

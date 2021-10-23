@@ -6,7 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using BookShop.Infrastructure.EntityFramework;
 using System.Text.Json.Serialization;
-using BookShop.Bootstrap;
+using BookShop.ServiceCollectionExtensions;
 using BookShop.Services;
 using BookShop.Services.Interfaces.Services;
 using Serilog;
@@ -45,7 +45,7 @@ namespace BookShop
             services.AddScoped<IRequestProduser, RequestProduser>();
 
             services.AddControllers();
-            //services.AddBackgroundJobs();
+            services.AddBackgroundJobs();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "BookShop", Version = "v1" });

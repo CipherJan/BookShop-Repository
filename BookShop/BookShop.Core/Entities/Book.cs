@@ -64,5 +64,6 @@ namespace BookShop.Core.Entities
             Novelty = BookNovelty.Old;
         }
 
+        public bool IsOld() => Novelty.Equals(BookNovelty.Old);
     }
 }

@@ -26,6 +26,7 @@ namespace BookShop.Infrastructure.EntityFramework
             var shop = await Set<Shop>().Include(s => s.Books).SingleAsync(x => x.Id == shopId);
 
             shop.AddBook(book);
+
             await SaveChangesAsync();
         }
 
@@ -35,12 +36,14 @@ namespace BookShop.Infrastructure.EntityFramework
 
             using (var transaction = Database.BeginTransaction())
             {
-                    var shop = await Set<Shop>().Include(s => s.Books).SingleAsync(x => x.Id == shopId);
-                    shop.WithdrawMoney(totalPrice);
-                    shop.AddBooks(books);
-                    shop.SetMaxBookQuantity();
-                    await SaveChangesAsync();
-                    transaction.Commit();
+                var shop = await Set<Shop>().Include(s => s.Books).SingleAsync(x => x.Id == shopId);
+
+                shop.WithdrawMoney(totalPrice);
+                shop.AddBooks(books);
+                shop.SetMaxBookQuantity();
+
+                await SaveChangesAsync();
+                transaction.Commit();
             }
 
         }
@@ -60,6 +63,7 @@ namespace BookShop.Infrastructure.EntityFramework
         public async Task UpdateBook(Book newBook)
         {
             Update(newBook);
+
             await SaveChangesAsync();
         }
 
@@ -70,12 +74,13 @@ namespace BookShop.Infrastructure.EntityFramework
                 var shop = await Set<Shop>().SingleAsync(x => x.Id == shopId);
                 var book = await Set<Book>().SingleAsync(x => x.Id == bookId);
 
-                if (shop.Sale.Equals(Sale.Active) && book.Novelty.Equals(BookNovelty.Old))
+                if (shop.Sale.Equals(Sale.Active) && book.IsOld())
                     shop.PutMoney(book.DiscountPrice);
                 else
                     shop.PutMoney(book.Price);
 
                 Remove(book);
+
                 await SaveChangesAsync();
                 tronsaction.Commit();
             }
@@ -83,6 +88,7 @@ namespace BookShop.Infrastructure.EntityFramework
         public async Task AddShop(Shop shop)
         {
             Add(shop);
+
             await SaveChangesAsync();
         }
         public async Task<Shop> GetShop(int shopId)
@@ -99,7 +105,9 @@ namespace BookShop.Infrastructure.EntityFramework
         {
             var shop = await Set<Shop>().SingleAsync(x => x.Id == shopId);
             shop.ChangeSaleStatus(sale);
+
             Update(shop);
+
             await SaveChangesAsync();
         }
 
@@ -108,8 +116,6 @@ namespace BookShop.Infrastructure.EntityFramework
             var shop = await Set<Shop>().SingleAsync(x => x.Id == shopId);
             return shop.Sale;
         }
-
-
 
         public async Task Migrate()
         {
@@ -131,7 +137,5 @@ namespace BookShop.Infrastructure.EntityFramework
             }
             await SaveChangesAsync();
         }
-
-
     }
 }

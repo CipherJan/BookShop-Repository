@@ -2,20 +2,27 @@
 using JetBrains.Annotations;
 using Quartz;
 using BookShop.Services.Interfaces.Services;
+using System;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BookShop.Jobs
 {
+    [UsedImplicitly]
+    [DisallowConcurrentExecution]
     public class MakeBooksOldJob: IJob
     {
-        private readonly IShopService _shopService;
+        private readonly IServiceProvider _serviceProvider;
 
-        public MakeBooksOldJob(IShopService shopService)
+        public MakeBooksOldJob(IServiceProvider serviceProvider)
         {
-            _shopService = shopService;
+            _serviceProvider = serviceProvider;
         }
         public async Task Execute(IJobExecutionContext context)
         {
-            await _shopService.JobMakeBooksOld();
+            using var scope = _serviceProvider.CreateScope();
+            var shopService = scope.ServiceProvider.GetRequiredService<IShopService>();
+
+            await shopService.JobMakeBooksOld();
         }
     }
 }

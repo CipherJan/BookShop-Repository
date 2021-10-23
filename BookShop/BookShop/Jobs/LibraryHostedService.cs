@@ -25,6 +25,7 @@ namespace BookShop.Jobs
             Scheduler = await _schedulerFactory.GetScheduler(cancellationToken);
             Scheduler.JobFactory = _jobFactory;
             await ConfigureBooksOrderJob();
+            await ConfigureMakeBooksOldJob();
             await Scheduler.Start(cancellationToken);
         }
 
@@ -37,17 +38,18 @@ namespace BookShop.Jobs
         private async Task ConfigureBooksOrderJob()
         {
             var trigger = TriggerBuilder.Create()
-                .WithIdentity(nameof(BooksOrderJob)).StartNow()
-                .WithSimpleSchedule(x => x.WithIntervalInHours(1).RepeatForever())
+                .WithIdentity(nameof(BooksOrderJob)).StartNow()   //возможен эксепшн при первом запуске NullRef при обращении к пустой бд
+                .WithSimpleSchedule(x => x.WithIntervalInMinutes(1).RepeatForever())
                 .Build();
             var job = JobBuilder.Create<BooksOrderJob>().WithIdentity(nameof(BooksOrderJob)).Build();
             await Scheduler.ScheduleJob(job, trigger);
         }
+
         private async Task ConfigureMakeBooksOldJob()
         {
             var trigger = TriggerBuilder.Create()
-                .WithIdentity(nameof(MakeBooksOldJob)).StartAt(System.DateTime.Now.AddHours(24))
-                .WithSimpleSchedule(x => x.WithIntervalInHours(24).RepeatForever())
+                .WithIdentity(nameof(MakeBooksOldJob)).StartAt(System.DateTime.Now.AddMinutes(24))
+                .WithSimpleSchedule(x => x.WithIntervalInMinutes(24).RepeatForever())
                 .Build();
             var job = JobBuilder.Create<MakeBooksOldJob>().WithIdentity(nameof(MakeBooksOldJob)).Build();
             await Scheduler.ScheduleJob(job, trigger);
