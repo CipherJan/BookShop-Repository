@@ -1,8 +1,9 @@
-﻿namespace Core
+﻿namespace BookShop.Core.MassTransit
 { 
     public class MassTransitConfiguration
     {
         public string RabbitMqAddress { get; set; }
+        
         public string Host { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }

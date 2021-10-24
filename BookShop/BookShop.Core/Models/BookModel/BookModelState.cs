@@ -1,9 +1,9 @@
-﻿using BookShop.Core.Entities;
-using System;
+﻿using System;
+using BookShop.Core.Entities;
 
-namespace BookShop.Core.Models
+namespace BookShop.Core.Models.BookModel
 {
-    public class BookModelOutput
+    public class BookModelState
     {
         public string Title { get; set; }
         public string Author { get; set; }
@@ -12,7 +12,7 @@ namespace BookShop.Core.Models
         public DateTime ReleaseDate { get; set; }
         public Guid BookId { get; set; }
 
-        public BookModelOutput(Book book, Sale saleStatus)
+        public BookModelState(Book book, Sale saleStatus)
         {
             Title = book.Title;
             Author = book.Author;

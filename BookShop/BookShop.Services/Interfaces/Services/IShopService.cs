@@ -1,26 +1,29 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using BookShop.Core.Models;
+using BookContractLibrary;
+using BookShop.Core.Models.BookModel;
+using BookShop.Core.Models.ShopModel;
 
 namespace BookShop.Services.Interfaces.Services
 {
     public  interface IShopService
     {
+        Task<Result> AddShop(ShopModel model);
+        Task<IEnumerable<ShopModelState>> GetAllShops();
+        Task<ShopModelState> GetShop(int shopId);
+        
         Task<Result> AddBookToShop(BookModel model, int shopId);
+        Task<IEnumerable<BookModelState>> GetAllBooksFromShop(int shopId);
+        Task<BookModelState> GetBookFromShop(Guid bookId, int shopId);
         Task<Result> BuyBookFromShop(Guid bookId, int shopId);
         Task<Result> StartSale(int shopId);
         Task<Result> CompleteSale(int shopId);
-        Task<BookModelOutput> GetBookFromShop(Guid bookId, int shopId);
-        Task<IEnumerable<BookModelOutput>> GetAllBooksFromShop(int shopId);
-        Task<Result> UpdateBook(BookModel model);
-        Task<Result> AddShop(ShopModel model);
-        Task<ShopModelOutput> GetShop(int shopId);
-        Task<IEnumerable<ShopModelOutput>> GetAllShops();
-        Task<Result> OrederBooksToShop(int shopId, int numberOfBooks);
-        Task JobBookOrder();
-        Task JobMakeBooksOld();
-        Task AcceptBooksFromConsumer(int shopId, double totalPrice, IEnumerable<BookModel> booksModel);
-
+        
+        Task<Result> CreateBooksDeliveryRequest(int shopId, int numberOfBooks);
+        Task AcceptBooksDelivery(IResponseContract<BookContract> shopId);
+        Task OrderBooksForAllShops();
+        Task MakeBooksOld();
+        
     }
 }

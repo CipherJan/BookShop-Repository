@@ -6,13 +6,13 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using BookShop.Infrastructure.EntityFramework;
 using System.Text.Json.Serialization;
+using BookShop.Infrastructure.MassTransit;
+using BookShop.Infrastructure.MassTransit.Interface;
 using BookShop.ServiceCollectionExtensions;
 using BookShop.Services;
 using BookShop.Services.Interfaces.Services;
 using Serilog;
 using MassTransit;
-using BookShop.Producer;
-using BookShop.Producer.Interface;
 
 namespace BookShop
 {
@@ -42,7 +42,7 @@ namespace BookShop
 
             services.AddMassTransitPublisherAndConsumer(Configuration);
             services.AddMassTransitHostedService();
-            services.AddScoped<IRequestProduser, RequestProduser>();
+            services.AddScoped<IRequestProducer, RequestProducer>();
 
             services.AddControllers();
             services.AddBackgroundJobs();

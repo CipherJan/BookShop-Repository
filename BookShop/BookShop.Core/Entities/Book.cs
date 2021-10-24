@@ -1,30 +1,35 @@
 ﻿using System;
-using BookShop.Core.Models;
+using System.Threading.Tasks;
+using BookShop.Core.Models.BookModel;
+using JetBrains.Annotations;
 
 namespace BookShop.Core.Entities
 {
+    [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
     public class Book
     {
+        private double _discountPrice;
+        private double _price;
+        
         public Guid Id { get; private set; }
         public string Title { get; private set; }
         public string Author { get; private set; }
         public BookGenre Genre { get; private set; }
-
-        private double _price;
+        
         public double Price
         {
             get => _price;
-            private set
+            private init
             {
                 _price = value;
                 DiscountPrice = value;
             }
         }
-        private double _discountPrice;
+        
         public double DiscountPrice
         {
             get => _discountPrice;
-            private set
+            private init
             {
                 _discountPrice = value;
 
@@ -41,7 +46,7 @@ namespace BookShop.Core.Entities
         public DateTime ReleaseDate { get; private set; }
 
         public BookNovelty Novelty { get; private set; }
-
+        
         public int ShopId { get; private set; }
         public Shop Shop { get; private set; }
 
@@ -59,9 +64,11 @@ namespace BookShop.Core.Entities
             Novelty = BookNovelty.New;
         }
 
-        public void MakeOld()
+        #warning выпиздить этот метод, определять старость книги по разнице между сейчас и (датой выпуска + какой-то период)
+        public Task MakeOld()
         {
             Novelty = BookNovelty.Old;
+            return Task.CompletedTask;
         }
 
         public bool IsOld() => Novelty.Equals(BookNovelty.Old);

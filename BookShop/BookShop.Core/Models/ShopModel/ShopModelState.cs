@@ -1,8 +1,8 @@
 ﻿using BookShop.Core.Entities;
 
-namespace BookShop.Core.Models
+namespace BookShop.Core.Models.ShopModel
 {
-    public class ShopModelOutput
+    public class ShopModelState
     {
         public string Name { get; set; }
         public double Balance { get; set; }
@@ -10,7 +10,8 @@ namespace BookShop.Core.Models
         public int BooksCount { get; set; }
 
         public int ShopId { get; set; }
-        public ShopModelOutput(Shop shop)
+        
+        public ShopModelState(Shop shop)
         {
             Name = shop.Name;
             Balance = shop.Balance;

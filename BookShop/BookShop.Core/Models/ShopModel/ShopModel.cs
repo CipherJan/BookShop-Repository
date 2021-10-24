@@ -1,4 +1,4 @@
-namespace BookShop.Core.Models
+namespace BookShop.Core.Models.ShopModel
 {
     public class ShopModel
     {

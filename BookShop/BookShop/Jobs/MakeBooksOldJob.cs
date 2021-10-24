@@ -22,7 +22,7 @@ namespace BookShop.Jobs
             using var scope = _serviceProvider.CreateScope();
             var shopService = scope.ServiceProvider.GetRequiredService<IShopService>();
 
-            await shopService.JobMakeBooksOld();
+            await shopService.MakeBooksOld();
         }
     }
 }

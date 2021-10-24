@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using BookShop.Core.Entities;
@@ -9,7 +10,10 @@ namespace BookShop.Infrastructure.EntityFramework
     public class BookShopContext : DbContext
     {
         public const string DefaultSchemaName = "BookShop";
-        const double BOOK_ACCEPTANCE_FEE_iN_PERCENT = 0.07;
+
+#warning унести в сервис
+        private const double BookAcceptanceFeeInPercent = 0.07;
+        private static double GetTotalPrice(double price) => BookAcceptanceFeeInPercent * price;
 
         public BookShopContext(DbContextOptions options) : base(options)
         {
@@ -20,7 +24,7 @@ namespace BookShop.Infrastructure.EntityFramework
             modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
             modelBuilder.HasDefaultSchema(DefaultSchemaName);
         }
-        
+
         public async Task AddBookInShop(Book book, int shopId)
         {
             var shop = await Set<Shop>().Include(s => s.Books).SingleAsync(x => x.Id == shopId);
@@ -34,20 +38,16 @@ namespace BookShop.Infrastructure.EntityFramework
         {
             var totalPrice = GetTotalPrice(price);
 
-            using (var transaction = Database.BeginTransaction())
-            {
-                var shop = await Set<Shop>().Include(s => s.Books).SingleAsync(x => x.Id == shopId);
+            await using var transaction = await Database.BeginTransactionAsync();
+            var shop = await Set<Shop>().Include(s => s.Books).SingleAsync(x => x.Id == shopId);
 
-                shop.WithdrawMoney(totalPrice);
-                shop.AddBooks(books);
-                shop.SetMaxBookQuantity();
+            shop.WithdrawMoney(totalPrice);
+            shop.AddBooks(books);
+            shop.SetMaxBookQuantity();
 
-                await SaveChangesAsync();
-                transaction.Commit();
-            }
-
+            await SaveChangesAsync();
+            await transaction.CommitAsync();
         }
-        private static double GetTotalPrice(double price) => BOOK_ACCEPTANCE_FEE_iN_PERCENT * price;
 
         public async Task<Book> GetBook(Guid bookId)
         {
@@ -56,44 +56,42 @@ namespace BookShop.Infrastructure.EntityFramework
 
         public async Task<IEnumerable<Book>> GetAllBooksFromShop(int shopId)
         {
-            var shop = await Set<Shop>().Include(s => s.Books).FirstOrDefaultAsync(x =>x.Id == shopId);
+            var shop = await Set<Shop>().Include(s => s.Books).FirstOrDefaultAsync(x => x.Id == shopId);
             return shop.Books;
-        }
-
-        public async Task UpdateBook(Book newBook)
-        {
-            Update(newBook);
-
-            await SaveChangesAsync();
         }
 
         public async Task BuyBookFromShop(Guid bookId, int shopId)
         {
-            using (var tronsaction = Database.BeginTransaction())
+            await using var transaction = await Database.BeginTransactionAsync();
+            var shop = await Set<Shop>().Include(x => x.Books).SingleAsync(x => x.Id == shopId);
+            var book = shop.Books.Single(b => b.Id == bookId);
+
+            if (shop.Sale.Equals(Sale.Active) && book.IsOld())
             {
-                var shop = await Set<Shop>().SingleAsync(x => x.Id == shopId);
-                var book = await Set<Book>().SingleAsync(x => x.Id == bookId);
-
-                if (shop.Sale.Equals(Sale.Active) && book.IsOld())
-                    shop.PutMoney(book.DiscountPrice);
-                else
-                    shop.PutMoney(book.Price);
-
-                Remove(book);
-
-                await SaveChangesAsync();
-                tronsaction.Commit();
+                shop.PutMoney(book.DiscountPrice);
             }
+            else
+            {
+                shop.PutMoney(book.Price);
+            }
+
+#warning добавить признак удалена ли книга, апдейтить его тут
+            Remove(book);
+
+            await SaveChangesAsync();
+            await transaction.CommitAsync();
         }
+
         public async Task AddShop(Shop shop)
         {
             Add(shop);
 
             await SaveChangesAsync();
         }
+
         public async Task<Shop> GetShop(int shopId)
         {
-            return await Set<Shop>().Include(s => s.Books).FirstOrDefaultAsync(x=> x.Id == shopId);
+            return await Set<Shop>().Include(s => s.Books).SingleAsync(x => x.Id == shopId);
         }
 
         public async Task<IEnumerable<Shop>> GetShops()
@@ -105,9 +103,6 @@ namespace BookShop.Infrastructure.EntityFramework
         {
             var shop = await Set<Shop>().SingleAsync(x => x.Id == shopId);
             shop.ChangeSaleStatus(sale);
-
-            Update(shop);
-
             await SaveChangesAsync();
         }
 
@@ -120,22 +115,6 @@ namespace BookShop.Infrastructure.EntityFramework
         public async Task Migrate()
         {
             await Database.MigrateAsync();
-        }
-
-        public async Task SetBookNovelty()
-        {
-            var shops = await Set<Shop>().Include(s => s.Books).ToListAsync();
-            foreach (var shop in shops)
-            {
-                foreach (var book in shop.Books)
-                {
-                    if (book.Novelty.Equals(BookNovelty.New))
-                    {
-                        book.MakeOld();
-                    }
-                }
-            }
-            await SaveChangesAsync();
         }
     }
 }

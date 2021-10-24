@@ -3,7 +3,7 @@ namespace BookShop.Core.Entities
 {
     public enum BookGenre
     {
-        Adventures,
+        Adventure,
         Drama,
         Encyclopedia,
         Fantastic,

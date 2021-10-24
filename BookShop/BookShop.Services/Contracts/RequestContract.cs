@@ -1,6 +1,6 @@
 ﻿using BookContractLibrary;
 
-namespace BookShop.Producer.Contracts
+namespace BookShop.Services.Contracts
 {
     public class RequestContract : IRequestContract
     {

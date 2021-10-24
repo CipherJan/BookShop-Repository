@@ -1,15 +1,13 @@
 ﻿using System.Collections.Specialized;
 using BookShop.Jobs;
-using Core;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using Quartz.Impl;
 using Quartz.Spi;
-using BookShop.Consumer;
-using MassTransit.MultiBus;
-using BookShop.ServiceCollectionExtensions.Interface;
+using BookShop.Core.MassTransit;
+using ResponseConsumer = BookShop.Consumers.ResponseConsumer;
 
 namespace BookShop.ServiceCollectionExtensions
 {
@@ -42,35 +40,22 @@ namespace BookShop.ServiceCollectionExtensions
 
             services.AddMassTransit(config => {
 
-                config.AddConsumer<ResponceConsumer>();
+                config.AddConsumer<ResponseConsumer>();
 
                 config.UsingRabbitMq((ctx, cfg) => {
-                    cfg.Host(hostConfig.RabbitMqAddress, configuration =>
+                    cfg.Host(hostConfig.RabbitMqAddress, hostConfiguration =>
                     {
-                        configuration.Username(hostConfig.UserName);
-                        configuration.Password(hostConfig.Password);
+                        hostConfiguration.Username(hostConfig.UserName);
+                        hostConfiguration.Password(hostConfig.Password);
                     });
                     cfg.Durable = hostConfig.Durable;
                     cfg.PurgeOnStartup = hostConfig.PurgeOnStartup;
-                    cfg.ReceiveEndpoint("Responce-Queue", c => {
-                        c.ConfigureConsumer<ResponceConsumer>(ctx);
+                    
+                    cfg.ReceiveEndpoint("BookShop.ReceiveBooksEndpoint", c => {
+                        c.ConfigureConsumer<ResponseConsumer>(ctx);
                     });
                 });
             });
-
-            services.AddMassTransit<ISecondBus>(config => {
-
-                config.UsingRabbitMq((ctx, cfg) => {
-                    cfg.Host(hostConfig.RabbitMqAddress, configuration =>
-                    {
-                        configuration.Username(hostConfig.UserName);
-                        configuration.Password(hostConfig.Password);
-                    });
-                    cfg.Durable = hostConfig.Durable;
-                    cfg.PurgeOnStartup = hostConfig.PurgeOnStartup;
-                });
-            });
-
             return services;
         }
     }

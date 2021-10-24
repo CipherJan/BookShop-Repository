@@ -4,20 +4,15 @@ namespace BookShop.Core.Entities
 {
     public static class Discounts
     {
-        private const double FANTASTIC_DISCOUNT_IN_PERCENT = 0.03;
-        private const double ADVENTURES_DISCOUNT_IN_PERCENT = 0.07;
-        private const double ENCYCLOPEDIA_DISCOUNT_IN_PERCENT = 0.1;
+        private const double FantasticDiscountInPercent = 0.03;
+        private const double AdventuresDiscountInPercent = 0.07;
+        private const double EncyclopediaDiscountInPercent = 0.1;
 
-        private static readonly Dictionary<BookGenre, double> _genresAndDiscounts = new()
+        public static readonly Dictionary<BookGenre, double> GenresAndDiscounts = new()
         {
-            {BookGenre.Adventures, ADVENTURES_DISCOUNT_IN_PERCENT},
-            {BookGenre.Encyclopedia, ENCYCLOPEDIA_DISCOUNT_IN_PERCENT},
-            {BookGenre.Fantastic, FANTASTIC_DISCOUNT_IN_PERCENT}
+            {BookGenre.Adventure, AdventuresDiscountInPercent},
+            {BookGenre.Encyclopedia, EncyclopediaDiscountInPercent},
+            {BookGenre.Fantastic, FantasticDiscountInPercent}
         };
-
-        public static Dictionary<BookGenre, double> GenresAndDiscounts
-        {
-            get => _genresAndDiscounts;
-        }
     }
 }

@@ -1,7 +1,7 @@
-﻿using BookShop.Core.Entities;
-using System;
+﻿using System;
+using BookShop.Core.Entities;
 
-namespace BookShop.Core.Models
+namespace BookShop.Core.Models.BookModel
 {
     public class BookModel
     {

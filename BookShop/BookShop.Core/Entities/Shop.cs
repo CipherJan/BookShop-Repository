@@ -1,13 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using BookShop.Core.Models;
 using BookShop.Core.Exceptions;
+using BookShop.Core.Models.ShopModel;
+using JetBrains.Annotations;
 
 namespace BookShop.Core.Entities
 {
+    [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
     public class Shop
     {
-        private static double MINIMUN_COUNT_OF_BOOKS_IN_PERCENT = 0.1;
+        private const double MinimumCountOfBooksInPercent = 0.1;
+        
+        public bool CheckYouNeedBooks() => MinimumCountOfBooksInPercent > GetNumberOfBooksAsPercentage();
+
+        public int GetNumberOfBooksToOrder() => MaxBookQuantity - Books.Count;
+        
         public int Id { get; private set; }
         public string Name { get; private set; }
         public Sale Sale { get; private set; }
@@ -46,16 +53,15 @@ namespace BookShop.Core.Entities
 
         public void WithdrawMoney(double sum)
         {
-            if (Balance >= sum)
+            if (!(Balance >= sum))
             {
-                Balance -= sum;
-                return;
+                throw new InsufficientFundsOnBalanceException(
+                    message: $"Problem from {nameof(Shop)}. Insufficient funds on the balance.",
+                    shopId: Id,
+                    balanceInShop: Balance,
+                    writeOffAmount: sum);
             }
-            throw new InsufficientFundsOnBalanceException(
-                message: $"Problem from {nameof(Shop)}. Insufficient funds on the balance.",
-                shopId: Id,
-                balanceInShop: Balance,
-                writeOffAmount: sum);
+            Balance -= sum;
         }
 
         public void SetMaxBookQuantity()
@@ -70,10 +76,7 @@ namespace BookShop.Core.Entities
         {
             Sale = sale;
         }
-        public bool CheckYouNeedBooks() => MINIMUN_COUNT_OF_BOOKS_IN_PERCENT > GetNumberOfBooksAsPercentage();
-
+        
         private double GetNumberOfBooksAsPercentage() => Math.Round((double)Books.Count / MaxBookQuantity, 2);
-
-        public int GetNumberOfBooksToOrder() => MaxBookQuantity - Books.Count;
     }
 }

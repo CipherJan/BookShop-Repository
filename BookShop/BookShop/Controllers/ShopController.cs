@@ -2,7 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using BookShop.Core.Models;
+using BookShop.Core.Models.BookModel;
+using BookShop.Core.Models.ShopModel;
 using BookShop.Services;
 using BookShop.Services.Interfaces.Services;
 
@@ -28,13 +29,7 @@ namespace BookShop.Controllers
         [HttpPost("/order-books/{shopId}/{numberOfBooks}")]
         public async Task<Result> OrderBooks(int shopId, int numberOfBooks)
         {
-            return await _shopService.OrederBooksToShop(shopId, numberOfBooks);
-        }
-
-        [HttpPost("/update-book")]
-        public async Task<Result> UpdateBook([FromBody] BookModel model)
-        {
-            return await _shopService.UpdateBook(model);
+            return await _shopService.CreateBooksDeliveryRequest(shopId, numberOfBooks);
         }
 
         [HttpPost("/buy-book/{bookId}/{shopId}")]
@@ -44,13 +39,13 @@ namespace BookShop.Controllers
         }
 
         [HttpGet("/get-book/{bookId}/{shopId}")]
-        public async Task<BookModelOutput> GetBook(Guid bookId, int shopId)
+        public async Task<BookModelState> GetBook(Guid bookId, int shopId)
         {
             return await _shopService.GetBookFromShop(bookId, shopId);
         }
 
         [HttpGet("/get-all-books/{shopId}")]
-        public async Task<IEnumerable<BookModelOutput>> GetAllBooks(int shopId)
+        public async Task<IEnumerable<BookModelState>> GetAllBooks(int shopId)
         {
             return await _shopService.GetAllBooksFromShop(shopId);
         }
@@ -61,13 +56,13 @@ namespace BookShop.Controllers
             return await _shopService.AddShop(model);
         }
         [HttpGet("/get-shop/{shopId}")]
-        public async Task<ShopModelOutput> GetShop(int shopId)
+        public async Task<ShopModelState> GetShop(int shopId)
         {
             return await _shopService.GetShop(shopId);
         }
 
         [HttpGet("/get-all-shops")]
-        public async Task<IEnumerable<ShopModelOutput>> GetAllShops()
+        public async Task<IEnumerable<ShopModelState>> GetAllShops()
         {
             return await _shopService.GetAllShops();
         }
