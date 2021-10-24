@@ -2,6 +2,7 @@
 using BookContractLibrary;
 using MassTransit;
 using BookProvider.Producer;
+using BookProvider.Producer.Interface;
 
 namespace BookProvider.Consumer
 {

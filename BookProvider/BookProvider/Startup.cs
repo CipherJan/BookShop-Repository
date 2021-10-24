@@ -1,3 +1,4 @@
+using BookProvider.Bootstrap;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -5,10 +6,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using BookProvider.Infrastructure.ProxyService;
-using ConfigureService;
 using MassTransit;
 using BookProvider.Infrastructure.BookService;
+using BookProvider.Infrastructure.BookService.Interface;
+using BookProvider.Infrastructure.ProxyService.Interface;
 using BookProvider.Producer;
+using BookProvider.Producer.Interface;
 
 namespace BookProvider
 {

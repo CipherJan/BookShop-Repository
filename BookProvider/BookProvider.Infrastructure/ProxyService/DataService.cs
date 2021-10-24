@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using System.Net;
+using BookProvider.Infrastructure.ProxyService.Interface;
 using Newtonsoft.Json;
 
 namespace BookProvider.Infrastructure.ProxyService

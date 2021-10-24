@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using BookContractLibrary;
 
-
-namespace BookProvider.Producer
+namespace BookProvider.Producer.Contract
 {
     internal class ResponseContract : IResponseContract<BookContract>
     {

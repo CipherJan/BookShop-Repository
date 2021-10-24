@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace BookProvider.Infrastructure.ProxyService
+namespace BookProvider.Infrastructure.ProxyService.Interface
 {
     public interface IDataService 
     {

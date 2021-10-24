@@ -1,10 +1,10 @@
 ﻿using BookProvider.Consumer;
-using Core;
+using BookProvider.Core;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BookProvider.ConfigureService
+namespace BookProvider.Bootstrap
 {
     public static class ServiceCollectionExtensions
     {

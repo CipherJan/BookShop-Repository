@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace BookProvider.Producer
+namespace BookProvider.Producer.Interface
 {
     public interface IResponseProducer
     {

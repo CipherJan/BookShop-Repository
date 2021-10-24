@@ -1,8 +1,8 @@
-﻿using Core;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using BookProvider.Core;
 
-namespace BookProvider.Infrastructure.BookService
+namespace BookProvider.Infrastructure.BookService.Interface
 {
     public interface IBookService
     {

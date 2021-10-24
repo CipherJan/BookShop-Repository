@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Core
+﻿namespace BookProvider.Core
 { 
     public class MassTransitConfiguration
     {

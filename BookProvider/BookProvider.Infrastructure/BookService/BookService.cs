@@ -1,8 +1,10 @@
 ﻿using BookProvider.Infrastructure.ProxyService;
-using Core;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using BookProvider.Core;
+using BookProvider.Infrastructure.BookService.Interface;
+using BookProvider.Infrastructure.ProxyService.Interface;
 
 namespace BookProvider.Infrastructure.BookService
 {
