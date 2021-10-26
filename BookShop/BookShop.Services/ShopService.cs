@@ -1,25 +1,29 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using BookShop.Core.Entities;
 using BookShop.Core.Exceptions;
-using BookShop.Infrastructure.EntityFramework;
-using BookShop.Services.Interfaces.Services;
-using Microsoft.Extensions.Logging;
-using System.Linq;
-using BookContractLibrary;
 using BookShop.Core.Models.BookModel;
 using BookShop.Core.Models.ShopModel;
+using BookShop.Infrastructure.EntityFramework;
 using BookShop.Infrastructure.MassTransit.Interface;
 using BookShop.Services.Contracts;
+using BookShop.Services.Interfaces.Services;
+using BookContractLibrary;
 
 namespace BookShop.Services
 {
     public class ShopService : IShopService
     {
+        private const double BookAcceptanceFeeInPercent = 0.07;
+
         private readonly BookShopContextDbContextFactory _factory;
         private readonly ILogger<ShopService> _logger;
         private readonly IRequestProducer _requestProducer;
+
+        private static double GetTotalPrice(double price) => BookAcceptanceFeeInPercent * price;
 
         public ShopService(BookShopContextDbContextFactory factory, ILogger<ShopService> logger,
             IRequestProducer requestProducer)
@@ -27,56 +31,6 @@ namespace BookShop.Services
             _factory = factory;
             _logger = logger;
             _requestProducer = requestProducer;
-        }
-
-        public async Task<Result> AddBookToShop(BookModel model, int shopId)
-        {
-            try
-            {
-                var book = new Book(model);
-                var database = _factory.GetContext();
-                await database.AddBookInShop(book, shopId);
-
-                return Result.Success;
-            }
-            catch (Exception exception)
-            {
-                _logger.LogError(exception, "Operation was failed");
-                return Result.Fail;
-            }
-        }
-
-        public async Task<BookModelState> GetBookFromShop(Guid bookId, int shopId)
-        {
-            var database = _factory.GetContext();
-            var saleStatus = await database.GetSaleStatusFromShop(shopId);
-            var book = await database.GetBook(bookId);
-
-            return new BookModelState(book, saleStatus);
-        }
-
-        public async Task<IEnumerable<BookModelState>> GetAllBooksFromShop(int shopId)
-        {
-            var database = _factory.GetContext();
-            var books = await database.GetAllBooksFromShop(shopId);
-            var saleStatus = await database.GetSaleStatusFromShop(shopId);
-
-            return books.Select(b => new BookModelState(b, saleStatus));
-        }
-
-        public async Task<Result> BuyBookFromShop(Guid bookId, int shopId)
-        {
-            try
-            {
-                var database = _factory.GetContext();
-                await database.BuyBookFromShop(bookId, shopId);
-                return Result.Success;
-            }
-            catch (Exception exception)
-            {
-                _logger.LogError(exception, $"Unable to purchase book with Id: {bookId} from shop with Id {shopId}");
-                return Result.Fail;
-            }
         }
 
         public async Task<Result> AddShop(ShopModel model)
@@ -95,13 +49,6 @@ namespace BookShop.Services
             }
         }
 
-        public async Task<ShopModelState> GetShop(int shopId)
-        {
-            var database = _factory.GetContext();
-            var shop = await database.GetShop(shopId);
-            return new ShopModelState(shop);
-        }
-
         public async Task<IEnumerable<ShopModelState>> GetAllShops()
         {
             var database = _factory.GetContext();
@@ -109,14 +56,61 @@ namespace BookShop.Services
             return shops.Select(s => new ShopModelState(s)).ToList();
         }
 
-        public async Task<Result> CreateBooksDeliveryRequest(int shopId, int numberOfBooks)
+        public async Task<ShopModelState> GetShop(int shopId)
         {
-            await _requestProducer.SendBooksRequestEvent(new RequestContract
+            var database = _factory.GetContext();
+            var shop = await database.GetShop(shopId);
+            return new ShopModelState(shop);
+        }
+
+        public async Task<Result> AddBookToShop(BookModel model, int shopId)
+        {
+            try
             {
-                FromShopId = shopId,
-                NumberOfBooks = numberOfBooks
-            });
-            return Result.Success;
+                var book = new Book(model);
+                var database = _factory.GetContext();
+                await database.AddBookToShop(book, shopId);
+
+                return Result.Success;
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(exception, "Operation was failed");
+                return Result.Fail;
+            }
+        }
+
+        public async Task<IEnumerable<BookModelState>> GetAllBooksFromShop(int shopId)
+        {
+            var database = _factory.GetContext();
+            var books = await database.GetAllBooksFromShop(shopId);
+            var saleStatus = await database.GetSaleStatusFromShop(shopId);
+
+            return books.Select(b => new BookModelState(b, saleStatus));
+        }
+
+        public async Task<BookModelState> GetBookFromShop(Guid bookId, int shopId)
+        {
+            var database = _factory.GetContext();
+            var saleStatus = await database.GetSaleStatusFromShop(shopId);
+            var book = await database.GetBook(bookId);
+
+            return new BookModelState(book, saleStatus);
+        }
+
+        public async Task<Result> BuyBookFromShop(Guid bookId, int shopId)
+        {
+            try
+            {
+                var database = _factory.GetContext();
+                await database.BuyBookFromShop(bookId, shopId);
+                return Result.Success;
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(exception, $"Unable to purchase book with Id: {bookId} from shop with Id {shopId}");
+                return Result.Fail;
+            }
         }
 
         public async Task<Result> StartSale(int shopId)
@@ -124,7 +118,7 @@ namespace BookShop.Services
             try
             {
                 var database = _factory.GetContext();
-                await database.SetSaleStatusFromShop(shopId, Sale.Active);
+                await database.SetSaleStatusFromShop(shopId, ShopSale.Active);
                 return Result.Success;
             }
             catch (Exception exception)
@@ -139,7 +133,7 @@ namespace BookShop.Services
             try
             {
                 var database = _factory.GetContext();
-                await database.SetSaleStatusFromShop(shopId, Sale.Inactive);
+                await database.SetSaleStatusFromShop(shopId, ShopSale.Inactive);
                 return Result.Success;
             }
             catch (Exception exception)
@@ -147,6 +141,16 @@ namespace BookShop.Services
                 _logger.LogError(exception, "Failed to finish the sale");
                 return Result.Fail;
             }
+        }
+
+        public async Task<Result> CreateBooksDeliveryRequest(int shopId, int numberOfBooks)
+        {
+            await _requestProducer.SendBooksRequestEvent(new RequestContract
+            {
+                FromShopId = shopId,
+                NumberOfBooks = numberOfBooks
+            });
+            return Result.Success;
         }
 
         public async Task OrderBooksForAllShops()
@@ -166,13 +170,7 @@ namespace BookShop.Services
             }
         }
 
-#warning выпиздить этот метод, определять старость книги по разнице между сейчас и (датой выпуска + какой-то период)
-        public Task MakeBooksOld()
-        {
-            return Task.CompletedTask;
-        }
-
-        public async Task AcceptBooksDelivery(IResponseContract<BookContract> message)
+        public async Task AcceptBooksDelivery(IResponseContract message)
         {
             var booksModel = message.Books.Select(x => new BookModel
             {
@@ -187,7 +185,7 @@ namespace BookShop.Services
                 var database = _factory.GetContext();
                 var books = booksModel.Select(x => new Book(x)).ToList();
 
-                await database.AddSeveralBooksInShop(message.ToShopId, message.TotalBooksPrice, books);
+                await database.AddSeveralBooksToShop(message.ToShopId, GetTotalPrice(message.TotalBooksPrice), books);
             }
             catch (InsufficientFundsOnBalanceException exception)
             {

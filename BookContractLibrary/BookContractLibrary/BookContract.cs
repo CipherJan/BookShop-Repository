@@ -1,9 +1,8 @@
 ﻿using System;
-using BookShop.Core.Entities;
 
-namespace BookShop.Core.Models.BookModel
+namespace BookContractLibrary
 {
-    public class BookModel
+    public class BookContract
     {
         public string Title { get; set; }
         public string Author { get; set; }

@@ -1,6 +1,6 @@
 ﻿namespace BookShop.Core.Entities
 {
-    public enum Sale
+    public enum ShopSale
     {
         Active,
         Inactive

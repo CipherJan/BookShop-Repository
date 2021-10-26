@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using BookShop.Core.Exceptions;
 using BookShop.Core.Models.ShopModel;
 using JetBrains.Annotations;
@@ -17,20 +18,19 @@ namespace BookShop.Core.Entities
         
         public int Id { get; private set; }
         public string Name { get; private set; }
-        public Sale Sale { get; private set; }
+        public ShopSale Sale { get; private set; }
         public double Balance { get; private set; }
         public int MaxBookQuantity { get; private set; }
         public List<Book> Books { get; private set; }
 
         private Shop()
         {
-
         }
 
         public Shop(ShopModel model)
         {
             Name = model.Name;
-            Sale = Sale.Inactive;
+            Sale = ShopSale.Inactive;
             Balance = model.Balance;
             MaxBookQuantity = model.MaxBookQuantity;
             Books = new List<Book>();
@@ -72,7 +72,7 @@ namespace BookShop.Core.Entities
             }
         }
 
-        public void ChangeSaleStatus(Sale sale)
+        public void ChangeSaleStatus(ShopSale sale)
         {
             Sale = sale;
         }

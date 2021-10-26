@@ -1,6 +1,5 @@
 ﻿using System;
 using BookContractLibrary;
-using BookProvider.Infrastructure.BookService;
 using MassTransit;
 using System.Linq;
 using System.Threading.Tasks;

@@ -2,15 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>373c3b15-de88-4c7c-94f4-0223538ce878</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.11.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BookExternalAPI.Core\BookExternalAPI.Core.csproj" />
-    <ProjectReference Include="..\BookExternalAPI.Infrastructure\BookExternalAPI.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

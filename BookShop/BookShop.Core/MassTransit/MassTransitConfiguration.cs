@@ -9,5 +9,6 @@
         public string Password { get; set; }
         public bool Durable { get; set; }
         public bool PurgeOnStartup { get; set; }
+
     }
 }

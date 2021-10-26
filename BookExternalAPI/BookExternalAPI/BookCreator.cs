@@ -9,6 +9,7 @@ namespace BookExternalAPI
         private static readonly string[] BookGenres = { "Adventure", "Encyclopedia", "Fantastic", "Drama", "Novel", };
         private static readonly string[] AuthorFirstNames = { "Paul", "George", "Oscar", "Emma", "Monika" };
         private static readonly string[] AuthorLastNames = { "Show", "Blanche", "Redklif", "Wilde", "Bradbury", "Remarque", "Huxley" };
+
         private static Random _randomizer;
         
         public static List<Book> GetBooks(int numberOfBooks)

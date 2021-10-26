@@ -5,23 +5,25 @@ namespace BookShop.Core.Models.BookModel
 {
     public class BookModelState
     {
-        public string Title { get; set; }
-        public string Author { get; set; }
-        public string Genre { get; set; }
-        public double Price { get; set; }
-        public DateTime ReleaseDate { get; set; }
-        public Guid BookId { get; set; }
+        public string Title { get; private set; }
+        public string Author { get; private set; }
+        public string Genre { get; private set; }
+        public double Price { get; private set; }
+        public string Novelty { get; private set; }
+        public string ReleaseDate { get; private set; }
+        public string BookId { get; private set; }
 
-        public BookModelState(Book book, Sale saleStatus)
+        public BookModelState(Book book, ShopSale saleStatus)
         {
             Title = book.Title;
             Author = book.Author;
             Genre = book.Genre.ToString();
+            Novelty = GetNovelty(book.IsNew());
             Price = GetPrice(book, saleStatus);
-            ReleaseDate = book.ReleaseDate;
-            BookId = book.Id;
+            ReleaseDate = book.ReleaseDate.ToString();
+            BookId = book.Id.ToString();
         }
-
-        private static double GetPrice(Book book, Sale saleStatus) => saleStatus.Equals(Sale.Active) && book.Novelty.Equals(BookNovelty.Old) ? book.DiscountPrice : book.Price;
+        private string GetNovelty(bool value) => value ? "New" : "Old";
+        private double GetPrice(Book book, ShopSale saleStatus) => saleStatus.Equals(ShopSale.Active) && !book.IsNew() ? book.DiscountPrice : book.Price;
     }
 }

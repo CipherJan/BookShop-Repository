@@ -7,7 +7,7 @@ using MassTransit;
 namespace BookShop.Consumers
 {
     [UsedImplicitly]
-    public class ResponseConsumer : IConsumer<IResponseContract<BookContract>>
+    public class ResponseConsumer : IConsumer<IResponseContract>
     {
         private readonly IShopService _shopService;
 
@@ -15,7 +15,7 @@ namespace BookShop.Consumers
         {
             _shopService = shopService;
         }
-        public async Task Consume(ConsumeContext<IResponseContract<BookContract>> context)
+        public async Task Consume(ConsumeContext<IResponseContract> context)
         {
             await _shopService.AcceptBooksDelivery(context.Message);
         }

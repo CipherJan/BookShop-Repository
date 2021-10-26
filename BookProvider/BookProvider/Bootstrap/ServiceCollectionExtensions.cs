@@ -1,5 +1,5 @@
 ﻿using BookProvider.Consumer;
-using BookProvider.Core;
+using BookProvider.Core.MassTransit;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,7 +25,7 @@ namespace BookProvider.Bootstrap
                     });
                     cfg.Durable = hostConfig.Durable;
                     cfg.PurgeOnStartup = hostConfig.PurgeOnStartup;
-                    cfg.ReceiveEndpoint("BookProvider.RequestBooksEndpoint", c => {
+                    cfg.ReceiveEndpoint(hostConfig.ReceiveQueueName, c => {
                         c.ConfigureConsumer<RequestConsumer>(ctx);
                     });
                 });

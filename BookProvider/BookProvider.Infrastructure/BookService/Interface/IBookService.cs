@@ -6,6 +6,6 @@ namespace BookProvider.Infrastructure.BookService.Interface
 {
     public interface IBookService
     {
-        public Task<List<Book>> GetBooks(int numberOfBooks);
+        public Task<IEnumerable<Book>> GetBooks(int numberOfBooks);
     }
 }

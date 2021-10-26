@@ -1,44 +1,31 @@
-﻿using BookProvider.Infrastructure.ProxyService;
-using Microsoft.Extensions.Configuration;
+﻿
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BookProvider.Core;
 using BookProvider.Infrastructure.BookService.Interface;
 using BookProvider.Infrastructure.ProxyService.Interface;
+using System;
+using BookProvider.Core.ExternalAPI;
 
 namespace BookProvider.Infrastructure.BookService
 {
     public class BookService : IBookService
     {
+        private const int DefaultNumberOfBooks = 1;
+
         private readonly IDataService _dataService;
-        private readonly IConfiguration _configuration;
+        private readonly ExternalAPIConfiguration _externalAPIConfiguration;
 
-        private const int NUMBER_OF_BOOKS = 5;
-        private readonly string _defaultUrl = @"https://localhost:5005/api/v1/books?numberOfBooks=";
-
-        public BookService(IDataService dataService, IConfiguration configuration)
+        public BookService(IDataService dataService, ExternalAPIConfiguration externalAPIConfiguration)
         {
             _dataService = dataService;
-            _configuration = configuration;
+            _externalAPIConfiguration = externalAPIConfiguration;
         }
 
-        public async Task<List<Book>> GetBooks(int numberOfBooks)
+        public async Task<IEnumerable<Book>> GetBooks(int numberOfBooks)
         {
-            return await _dataService.GetData<List<Book>>(url:GetUrl(numberOfBooks));
+            return await _dataService.GetData<List<Book>>(_externalAPIConfiguration.GetUrlAddress(SetNumberOfBooks(numberOfBooks)));
         }
-
-        private string GetUrl(int numberOfBooks)
-        {
-            string url = _configuration.GetConnectionString("ConnectionUrl") ?? _defaultUrl;
-
-            if (numberOfBooks < 1)
-            {
-                numberOfBooks = NUMBER_OF_BOOKS;
-            }
-            url += numberOfBooks;
-
-            return url;
-        }
-
+        private int SetNumberOfBooks (int numberOfBooks) => numberOfBooks >= 1 ? numberOfBooks : DefaultNumberOfBooks;
     }
 }

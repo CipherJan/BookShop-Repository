@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <AssemblyName>BookContractLibrary</AssemblyName>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>CipherJan</Authors>
+    <PackageId>BookContractLibrary_from_BookShop</PackageId>
+    <Product>BookContractLibrary</Product>
+    <Version>1.0.4</Version>
+    <Description>Сontains a contract for requesting books, a contract for receiving books and a class of books sent under the contract.</Description>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>C:\Users\ASUS\source\repos\LocalNuget\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETCore.App" Version="2.2.8" />
+  </ItemGroup>
+
+</Project>

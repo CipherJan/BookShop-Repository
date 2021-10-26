@@ -21,9 +21,7 @@ namespace BookShop.Services.Interfaces.Services
         Task<Result> CompleteSale(int shopId);
         
         Task<Result> CreateBooksDeliveryRequest(int shopId, int numberOfBooks);
-        Task AcceptBooksDelivery(IResponseContract<BookContract> shopId);
+        Task AcceptBooksDelivery(IResponseContract shopId);
         Task OrderBooksForAllShops();
-        Task MakeBooksOld();
-        
     }
 }

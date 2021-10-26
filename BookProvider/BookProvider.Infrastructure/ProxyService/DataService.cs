@@ -3,7 +3,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
-using System.Net;
 using BookProvider.Infrastructure.ProxyService.Interface;
 using Newtonsoft.Json;
 
@@ -12,17 +11,15 @@ namespace BookProvider.Infrastructure.ProxyService
     public class DataService : IDataService
     {
         private readonly HttpClient _httpClient;
-        private const int NUMBER_OF_BOOKS = 5;
-        private readonly string _defaultUrl = @"https://localhost:5005/api/v1/books?numberOfBooks=" + $"{NUMBER_OF_BOOKS}";
 
         public DataService(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
 
-        public async Task<T> GetData<T>([CanBeNull] string url) where T : class
+        public async Task<T> GetData<T>([NotNull] string url) where T : class
         {
-            var response = await GetJsonResponseAsync<T>(url ?? _defaultUrl, HttpMethod.Get);
+            var response = await GetJsonResponseAsync<T>(url, HttpMethod.Get);
             return response;
         }
 

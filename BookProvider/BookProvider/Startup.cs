@@ -10,8 +10,9 @@ using MassTransit;
 using BookProvider.Infrastructure.BookService;
 using BookProvider.Infrastructure.BookService.Interface;
 using BookProvider.Infrastructure.ProxyService.Interface;
-using BookProvider.Producer;
 using BookProvider.Producer.Interface;
+using BookProvider.Producer;
+using BookProvider.Core.ExternalAPI;
 
 namespace BookProvider
 {
@@ -27,8 +28,16 @@ namespace BookProvider
         public void ConfigureServices(IServiceCollection services)
         {
 
+
             services.AddControllers();
             services.AddHttpClient();
+
+            services.AddScoped<ExternalAPIConfiguration>(isp => 
+            {
+                var externalApiConfig = new ExternalAPIConfiguration();
+                Configuration.GetSection("ExternalAPIUrl").Bind(externalApiConfig);
+                return externalApiConfig;
+            });
 
             services.AddMassTransitPublisherAndConsumer(Configuration);
             services.AddMassTransitHostedService();

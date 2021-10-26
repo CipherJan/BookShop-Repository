@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using BookShop.Core.Models.BookModel;
 using JetBrains.Annotations;
 
@@ -45,7 +44,7 @@ namespace BookShop.Core.Entities
         }
         public DateTime ReleaseDate { get; private set; }
 
-        public BookNovelty Novelty { get; private set; }
+        public BookSaleStatus Status { get; private set; }
         
         public int ShopId { get; private set; }
         public Shop Shop { get; private set; }
@@ -61,16 +60,9 @@ namespace BookShop.Core.Entities
             Genre = Enum.Parse<BookGenre>(model.Genre);
             Price = model.Price;
             ReleaseDate = model.ReleaseDate;
-            Novelty = BookNovelty.New;
+            Status = BookSaleStatus.Asale;
         }
-
-        #warning выпиздить этот метод, определять старость книги по разнице между сейчас и (датой выпуска + какой-то период)
-        public Task MakeOld()
-        {
-            Novelty = BookNovelty.Old;
-            return Task.CompletedTask;
-        }
-
-        public bool IsOld() => Novelty.Equals(BookNovelty.Old);
+        public bool IsNew() => DateTime.Now < ReleaseDate.AddYears(1);
+        public void Sold() => Status = BookSaleStatus.Sold;
     }
 }

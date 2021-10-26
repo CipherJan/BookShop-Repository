@@ -3,7 +3,7 @@ using BookContractLibrary;
 
 namespace BookProvider.Producer.Contract
 {
-    internal class ResponseContract : IResponseContract<BookContract>
+    internal class ResponseContract : IResponseContract
     {
         public int ToShopId { get; set; }
         public double TotalBooksPrice { get; set; }

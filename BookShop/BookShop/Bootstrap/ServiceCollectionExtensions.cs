@@ -7,7 +7,7 @@ using Quartz;
 using Quartz.Impl;
 using Quartz.Spi;
 using BookShop.Core.MassTransit;
-using ResponseConsumer = BookShop.Consumers.ResponseConsumer;
+using BookShop.Consumers;
 
 namespace BookShop.ServiceCollectionExtensions
 {
@@ -27,7 +27,6 @@ namespace BookShop.ServiceCollectionExtensions
                 return new StdSchedulerFactory(properties);
             });
             services.AddSingleton<BooksOrderJob>();
-            services.AddSingleton<MakeBooksOldJob>();
             services.AddHostedService<LibraryHostedService>();
 
             return services;

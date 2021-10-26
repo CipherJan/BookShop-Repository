@@ -30,11 +30,14 @@ namespace BookShop
                 Log.Information("Starting web host");
 
                 var host = CreateHostBuilder(args).Build();
+
                 using var scope = host.Services.CreateScope();
                 var services = scope.ServiceProvider;
                 var context = services.GetRequiredService<BookShopContextDbContextFactory>();
                 await context.GetContext().Migrate();
+
                 await host.RunAsync();
+
                 Log.Information("Web host started");
             }
             catch (Exception ex)

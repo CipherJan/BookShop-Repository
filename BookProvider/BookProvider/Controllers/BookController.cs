@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BookProvider.Core;
-using BookProvider.Infrastructure.BookService;
 using BookProvider.Infrastructure.BookService.Interface;
 
 namespace BookProvider.Controllers
