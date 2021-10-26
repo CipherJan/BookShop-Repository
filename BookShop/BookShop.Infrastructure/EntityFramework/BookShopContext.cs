@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using BookShop.Core.Entities;
 
 namespace BookShop.Infrastructure.EntityFramework
@@ -28,7 +28,7 @@ namespace BookShop.Infrastructure.EntityFramework
             await SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Shop>> GetShops()
+        public async Task<IEnumerable<Shop>> GetAllShops()
         {
             return await Set<Shop>().Include(s => s.Books).ToListAsync();
         }

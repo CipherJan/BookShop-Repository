@@ -5,6 +5,6 @@ namespace BookProvider.Infrastructure.ProxyService.Interface
 {
     public interface IDataService 
     {
-        public Task<T> GetData<T>(string url) where T : class;
+        public Task<T> GetData<T>(Uri uri) where T : class;
     }
 }

@@ -1,18 +1,18 @@
-using BookProvider.Bootstrap;
+using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using BookProvider.Infrastructure.ProxyService;
-using MassTransit;
+using BookProvider.Bootstrap;
+using BookProvider.Core.ExternalAPI;
 using BookProvider.Infrastructure.BookService;
 using BookProvider.Infrastructure.BookService.Interface;
+using BookProvider.Infrastructure.MassTransit.Interface;
+using BookProvider.Infrastructure.MassTransit;
+using BookProvider.Infrastructure.ProxyService;
 using BookProvider.Infrastructure.ProxyService.Interface;
-using BookProvider.Producer.Interface;
-using BookProvider.Producer;
-using BookProvider.Core.ExternalAPI;
 
 namespace BookProvider
 {
@@ -27,12 +27,10 @@ namespace BookProvider
 
         public void ConfigureServices(IServiceCollection services)
         {
-
-
             services.AddControllers();
             services.AddHttpClient();
 
-            services.AddScoped<ExternalAPIConfiguration>(isp => 
+            services.AddScoped(isp => 
             {
                 var externalApiConfig = new ExternalAPIConfiguration();
                 Configuration.GetSection("ExternalAPIUrl").Bind(externalApiConfig);

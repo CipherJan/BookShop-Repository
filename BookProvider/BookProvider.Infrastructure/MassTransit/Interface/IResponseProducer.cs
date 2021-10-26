@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace BookProvider.Producer.Interface
+namespace BookProvider.Infrastructure.MassTransit.Interface
 {
     public interface IResponseProducer
     {

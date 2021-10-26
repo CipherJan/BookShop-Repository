@@ -10,9 +10,9 @@ namespace BookProvider.Core.MassTransit
         public bool Durable { get; set; }
         public bool PurgeOnStartup { get; set; }
         public string ReceiveQueueName { get; set; }
-        public string RequestQueueName { private get; set; }
+        public string RequestQueueName { get; set; }
 
-        public Uri GetQueueAddress()
+        public Uri GetRequestEndpoint()
         {
             return new Uri(RabbitMqAddress + "/" + RequestQueueName);
         }

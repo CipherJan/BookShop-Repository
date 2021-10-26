@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
-using BookContractLibrary;
+﻿using BookContractLibrary;
 using MassTransit;
-using BookProvider.Producer.Interface;
+using System.Threading.Tasks;
+using BookProvider.Infrastructure.MassTransit.Interface;
 
 namespace BookProvider.Consumer
 {

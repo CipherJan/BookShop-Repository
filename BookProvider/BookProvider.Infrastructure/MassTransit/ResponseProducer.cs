@@ -1,23 +1,25 @@
-﻿using System;
-using BookContractLibrary;
+﻿using BookContractLibrary;
 using MassTransit;
 using System.Linq;
 using System.Threading.Tasks;
+using BookProvider.Core.MassTransit;
 using BookProvider.Infrastructure.BookService.Interface;
-using BookProvider.Producer.Contract;
-using BookProvider.Producer.Interface;
+using BookProvider.Infrastructure.MassTransit.Interface;
+using BookProvider.Infrastructure.MassTransit.Contract;
 
-namespace BookProvider.Producer
+namespace BookProvider.Infrastructure.MassTransit
 {
     public class ResponseProducer : IResponseProducer
     {
         private readonly IBookService _bookService;
         private readonly ISendEndpointProvider _sendEndpointProvider;
+        private readonly MassTransitConfiguration _massTransitConfig;
 
-        public ResponseProducer(IBookService bookService, ISendEndpointProvider sendEndpointProvider)
+        public ResponseProducer(IBookService bookService, ISendEndpointProvider sendEndpointProvider, MassTransitConfiguration massTransitConfig)
         {
             _bookService = bookService;
             _sendEndpointProvider = sendEndpointProvider;
+            _massTransitConfig = massTransitConfig;
         }
 
         public async Task SentBooksResponseEvent(int toShopId, int numberOfBooks)
@@ -41,8 +43,8 @@ namespace BookProvider.Producer
                 TotalBooksPrice = totalPrice,
                 Books = booksContract
             };
-            
-            var endpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri("rabbitmq://localhost/BookShop.ReceiveBooksEndpoint"));
+
+            var endpoint = await _sendEndpointProvider.GetSendEndpoint(_massTransitConfig.GetRequestEndpoint());
             await endpoint.Send(response);
         }
     }

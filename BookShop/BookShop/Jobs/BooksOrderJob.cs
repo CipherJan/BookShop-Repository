@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using JetBrains.Annotations;
 using Quartz;
 using BookShop.Services.Interfaces.Services;
-using System;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace BookShop.Jobs
 {

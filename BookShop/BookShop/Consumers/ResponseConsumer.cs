@@ -1,8 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using MassTransit;
+using System.Threading.Tasks;
+using JetBrains.Annotations;
 using BookContractLibrary;
 using BookShop.Services.Interfaces.Services;
-using JetBrains.Annotations;
-using MassTransit;
 
 namespace BookShop.Consumers
 {

@@ -52,7 +52,7 @@ namespace BookShop.Services
         public async Task<IEnumerable<ShopModelState>> GetAllShops()
         {
             var database = _factory.GetContext();
-            var shops = await database.GetShops();
+            var shops = await database.GetAllShops();
             return shops.Select(s => new ShopModelState(s)).ToList();
         }
 
@@ -156,7 +156,7 @@ namespace BookShop.Services
         public async Task OrderBooksForAllShops()
         {
             var database = _factory.GetContext();
-            var shops = await database.GetShops();
+            var shops = await database.GetAllShops();
             foreach (var shop in shops)
             {
                 if (shop.CheckYouNeedBooks())

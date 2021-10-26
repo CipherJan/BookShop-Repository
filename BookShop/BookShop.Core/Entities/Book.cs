@@ -42,10 +42,9 @@ namespace BookShop.Core.Entities
                 }
             }
         }
-        public DateTime ReleaseDate { get; private set; }
 
+        public DateTime ReleaseDate { get; private set; }
         public BookSaleStatus Status { get; private set; }
-        
         public int ShopId { get; private set; }
         public Shop Shop { get; private set; }
 

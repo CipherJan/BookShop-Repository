@@ -1,18 +1,20 @@
+using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using BookShop.Infrastructure.EntityFramework;
+using Serilog;
 using System.Text.Json.Serialization;
+using BookShop.Infrastructure.EntityFramework;
 using BookShop.Infrastructure.MassTransit;
 using BookShop.Infrastructure.MassTransit.Interface;
 using BookShop.ServiceCollectionExtensions;
 using BookShop.Services;
 using BookShop.Services.Interfaces.Services;
-using Serilog;
-using MassTransit;
+
+
 
 namespace BookShop
 {
@@ -42,6 +44,7 @@ namespace BookShop
 
             services.AddMassTransitPublisherAndConsumer(Configuration);
             services.AddMassTransitHostedService();
+
             services.AddScoped<IRequestProducer, RequestProducer>();
 
             services.AddControllers();

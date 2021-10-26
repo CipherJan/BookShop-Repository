@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 using BookProvider.Infrastructure.ProxyService.Interface;
 using Newtonsoft.Json;
+using System.Net;
 
 namespace BookProvider.Infrastructure.ProxyService
 {
@@ -17,13 +18,13 @@ namespace BookProvider.Infrastructure.ProxyService
             _httpClient = httpClient;
         }
 
-        public async Task<T> GetData<T>([NotNull] string url) where T : class
+        public async Task<T> GetData<T>([NotNull] Uri uri) where T : class
         {
-            var response = await GetJsonResponseAsync<T>(url, HttpMethod.Get);
+            var response = await GetJsonResponseAsync<T>(uri, HttpMethod.Get);
             return response;
         }
 
-        private async Task<T> GetJsonResponseAsync<T>(string url, HttpMethod method, string content = null) where T : class
+        private async Task<T> GetJsonResponseAsync<T>(Uri uri, HttpMethod method, string content = null) where T : class
         {
 #if DEBUG
             ServicePointManager.ServerCertificateValidationCallback = (a, s, d, f) => true;
@@ -33,7 +34,7 @@ namespace BookProvider.Infrastructure.ProxyService
                 var httpRequest = new HttpRequestMessage
                 {
                     Method = method,
-                    RequestUri = new Uri(url),
+                    RequestUri = uri,
                     Content = new StringContent(content ?? string.Empty, Encoding.UTF8, "application/json")
                 };
                 var response = await _httpClient.SendAsync(httpRequest);

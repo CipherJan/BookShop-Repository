@@ -1,4 +1,3 @@
-using BookShop.Infrastructure.EntityFramework;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,6 +6,7 @@ using Serilog;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using BookShop.Infrastructure.EntityFramework;
 
 namespace BookShop
 {

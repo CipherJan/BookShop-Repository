@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using BookContractLibrary;
 
-namespace BookProvider.Producer.Contract
+namespace BookProvider.Infrastructure.MassTransit.Contract
 {
     internal class ResponseContract : IResponseContract
     {

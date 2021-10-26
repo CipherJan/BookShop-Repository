@@ -1,11 +1,9 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using BookProvider.Core;
+using BookProvider.Core.ExternalAPI;
 using BookProvider.Infrastructure.BookService.Interface;
 using BookProvider.Infrastructure.ProxyService.Interface;
-using System;
-using BookProvider.Core.ExternalAPI;
 
 namespace BookProvider.Infrastructure.BookService
 {
@@ -21,7 +19,6 @@ namespace BookProvider.Infrastructure.BookService
             _dataService = dataService;
             _externalAPIConfiguration = externalAPIConfiguration;
         }
-
         public async Task<IEnumerable<Book>> GetBooks(int numberOfBooks)
         {
             return await _dataService.GetData<List<Book>>(_externalAPIConfiguration.GetUrlAddress(SetNumberOfBooks(numberOfBooks)));

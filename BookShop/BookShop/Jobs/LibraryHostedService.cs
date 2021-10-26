@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 using Microsoft.Extensions.Hosting;
+using JetBrains.Annotations;
 using Quartz;
 using Quartz.Spi;
 
