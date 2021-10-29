@@ -1,0 +1,38 @@
+version: '3.5'
+services:
+
+  book_external_api:
+    image: ${DOCKER_REGISTRY-}book_external_api
+    container_name: "book_external_api" 
+    build:
+      context: ./BookExternalAPI/
+      dockerfile: BookExternalAPI/Dockerfile
+    environment:
+    - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5010:80"
+    networks:
+    - bookshop-network
+
+  book_provider:
+    image: ${DOCKER_REGISTRY-}book_provider
+    container_name: "book_provider" 
+    build:
+      context: ./BookProvider/
+      dockerfile: BookProvider/Dockerfile
+    environment:
+    - ASPNETCORE_ENVIRONMENT=Development
+    - BOOK_EXTERNAL_API=book_external_api:80
+    ports:
+      - "5100:80"
+    networks:
+    - bookshop-network
+
+networks:
+  bookshop-network:
+    driver: bridge
+    name: bookshop-network
+    
+
+
+
