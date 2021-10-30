@@ -1,46 +1,6 @@
 version: '3.5'
 
 services:
-  book_shop:
-    image: ${DOCKER_REGISTRY-}book_shop
-    container_name: "book_shop" 
-    build:
-      context: ./BookShop/
-      dockerfile: Dockerfile
-    environment:
-    - ASPNETCORE_ENVIRONMENT=Development
-    ports:
-      - "5000:80"
-    networks:
-    - dev-local
-
-  book_provider:
-    image: ${DOCKER_REGISTRY-}book_provider
-    container_name: "book_provider" 
-    build:
-      context: ./BookProvider/
-      dockerfile: Dockerfile
-    environment:
-    - ASPNETCORE_ENVIRONMENT=Development
-    - BOOK_EXTERNAL_API_URL=http://book_external_api:80
-    ports:
-      - "5100:80"
-    networks:
-    - dev-local
-
-  book_external_api:
-    image: ${DOCKER_REGISTRY-}book_external_api
-    container_name: "book_external_api" 
-    build:
-      context: ./BookExternalAPI/
-      dockerfile: Dockerfile
-    environment:
-    - ASPNETCORE_ENVIRONMENT=Development
-    ports:
-      - "5200:80"
-    networks:
-    - dev-local
-
   mssql:
     image: "mcr.microsoft.com/mssql/server:2019-latest"
     container_name: "mssql" 
@@ -49,8 +9,6 @@ services:
     environment:
     - ACCEPT_EULA=Y
     - SA_PASSWORD=2wsx2WSX
-    networks:
-    - dev-local
     restart: always 
 
   rabbitmq:
@@ -65,40 +23,72 @@ services:
       - "15671:15671"
       - "15672:15672"
       - "25672:25672"
-    networks:
-    - dev-local
 
-  elasticsearch:
-    image: "docker.elastic.co/elasticsearch/elasticsearch-oss:7.9.2"
-    container_name: "elasticsearch"
-    restart: unless-stopped
+  # elasticsearch:
+  #   image: "docker.elastic.co/elasticsearch/elasticsearch-oss:7.9.2"
+  #   container_name: "elasticsearch"
+  #   restart: unless-stopped
+  #   environment:
+  #     - discovery.type=single-node
+  #   ports: 
+  #     - "9200:9200"
+  #     - "9300:9300"
+  #   networks:
+  #     - dev-local
+
+  # kibana:
+  #   image: "docker.elastic.co/kibana/kibana-oss:7.9.2"
+  #   container_name: "kibana"
+  #   depends_on:
+  #     - elasticsearch
+  #   restart: always
+  #   ports:
+  #     - "5601:5601"
+  #   networks:
+  #     - dev-local
+
+  book_shop:
+    image: book_shop
+    container_name: "book_shop" 
+    build:
+      context: ./BookShop/
+      dockerfile: Dockerfile
     environment:
-      - discovery.type=single-node
-    ports: 
-      - "9200:9200"
-      - "9300:9300"
-    networks:
-      - dev-local
-
-  kibana:
-    image: "docker.elastic.co/kibana/kibana-oss:7.9.2"
-    container_name: "kibana"
-    depends_on:
-      - elasticsearch
-    restart: always
+    - ASPNETCORE_ENVIRONMENT=Development
+    - ConnectionStrings__DefaultConnection=Data Source=mssql;Initial Catalog=BookShop;User Id=sa;Password=2wsx2WSX;TrustServerCertificate=true
+    - MassTransit__RabbitMqAddress=rabbitmq://rabbitmq
     ports:
-      - "5601:5601"
-    networks:
-      - dev-local
+      - "5000:8080"
+    depends_on:
+    - rabbitmq
+    - mssql
+    - book_provider
 
-networks:
-  bookshop-network:
-    name: bookshop-network
+  book_provider:
+    image: book_provider
+    container_name: "book_provider" 
+    build:
+      context: ./BookProvider/
+      dockerfile: Dockerfile
+    environment:
+    - MassTransit__RabbitMqAddress=rabbitmq://rabbitmq
+    - ASPNETCORE_ENVIRONMENT=Development
+    - ExternalAPIUrl__ExternalAPIAddress=http://book_external_api:8080
+    ports:
+      - "5100:8080"
+    depends_on:
+    - rabbitmq
+    - book_external_api
 
-  dev-local:
-    driver: bridge
-    name: dev-local
+  book_external_api:
+    image: book_external_api
+    container_name: "book_external_api" 
+    build:
+      context: ./BookExternalAPI/
+      dockerfile: Dockerfile
+    environment:
+    - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5200:8080"
+
     
-
-
-

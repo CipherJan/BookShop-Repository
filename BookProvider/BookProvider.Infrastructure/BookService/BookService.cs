@@ -12,16 +12,16 @@ namespace BookProvider.Infrastructure.BookService
         private const int DefaultNumberOfBooks = 1;
 
         private readonly IDataService _dataService;
-        private readonly ExternalAPIConfiguration _externalAPIConfiguration;
+        private readonly ExternalAPIConfiguration _externalApiConfiguration;
 
-        public BookService(IDataService dataService, ExternalAPIConfiguration externalAPIConfiguration)
+        public BookService(IDataService dataService, ExternalAPIConfiguration externalApiConfiguration)
         {
             _dataService = dataService;
-            _externalAPIConfiguration = externalAPIConfiguration;
+            _externalApiConfiguration = externalApiConfiguration;
         }
         public async Task<IEnumerable<Book>> GetBooks(int numberOfBooks)
         {
-            return await _dataService.GetData<List<Book>>(_externalAPIConfiguration.GetUrlAddress(SetNumberOfBooks(numberOfBooks)));
+            return await _dataService.GetBooks(_externalApiConfiguration.ExternalAPIAddress, SetNumberOfBooks(numberOfBooks));
         }
         private int SetNumberOfBooks (int numberOfBooks) => numberOfBooks >= 1 ? numberOfBooks : DefaultNumberOfBooks;
     }

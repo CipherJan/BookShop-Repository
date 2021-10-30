@@ -7,10 +7,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Text.Json.Serialization;
+using BookShop.Bootstrap;
 using BookShop.Infrastructure.EntityFramework;
 using BookShop.Infrastructure.MassTransit;
 using BookShop.Infrastructure.MassTransit.Interface;
-using BookShop.ServiceCollectionExtensions;
 using BookShop.Services;
 using BookShop.Services.Interfaces.Services;
 

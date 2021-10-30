@@ -35,14 +35,6 @@ namespace BookProvider
             {
                 var externalApiConfig = new ExternalAPIConfiguration();
                 Configuration.GetSection("ExternalAPIUrl").Bind(externalApiConfig);
-
-                string apiUrl = Environment.GetEnvironmentVariable("BOOK_EXTERNAL_API_URL");
-                if (!String.IsNullOrEmpty(apiUrl))
-                {
-                    externalApiConfig.ExternalAPIAddress = apiUrl;
-                }
-
-
                 return externalApiConfig;
             });
 

@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using BookProvider.Core;
 using JetBrains.Annotations;
 using BookProvider.Infrastructure.ProxyService.Interface;
 using Newtonsoft.Json;
-using System.Net;
 
 namespace BookProvider.Infrastructure.ProxyService
 {
@@ -18,23 +19,21 @@ namespace BookProvider.Infrastructure.ProxyService
             _httpClient = httpClient;
         }
 
-        public async Task<T> GetData<T>([NotNull] Uri uri) where T : class
+        public async Task<IEnumerable<Book>> GetBooks(string hostUrl, int setNumberOfBooks)
         {
-            var response = await GetJsonResponseAsync<T>(uri, HttpMethod.Get);
+            var url =  $"{hostUrl}/api/v1/books?numberOfBooks={setNumberOfBooks}";
+            var response = await GetJsonResponseAsync<IEnumerable<Book>>(url, HttpMethod.Get);
             return response;
         }
 
-        private async Task<T> GetJsonResponseAsync<T>(Uri uri, HttpMethod method, string content = null) where T : class
+        private async Task<T> GetJsonResponseAsync<T>(string url, HttpMethod method, string content = null) where T : class
         {
-#if DEBUG
-            ServicePointManager.ServerCertificateValidationCallback = (a, s, d, f) => true;
-#endif
             try
             {
                 var httpRequest = new HttpRequestMessage
                 {
                     Method = method,
-                    RequestUri = uri,
+                    RequestUri = new Uri(url),
                     Content = new StringContent(content ?? string.Empty, Encoding.UTF8, "application/json")
                 };
                 var response = await _httpClient.SendAsync(httpRequest);
@@ -42,13 +41,12 @@ namespace BookProvider.Infrastructure.ProxyService
 
                 return JsonConvert.DeserializeObject<T>(json);
             }
-            finally
+            catch (Exception e)
             {
-#if DEBUG
-                ServicePointManager.ServerCertificateValidationCallback = null;
-#endif
+                Console.WriteLine(e.Message);
+                throw;
             }
-
         }
+
     }
 }

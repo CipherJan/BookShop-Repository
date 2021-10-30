@@ -1,15 +1,15 @@
-﻿using MassTransit;
+﻿using System.Collections.Specialized;
+using BookShop.Consumers;
+using BookShop.Core.MassTransit;
+using BookShop.Jobs;
+using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Specialized;
 using Quartz;
 using Quartz.Impl;
 using Quartz.Spi;
-using BookShop.Core.MassTransit;
-using BookShop.Consumers;
-using BookShop.Jobs;
 
-namespace BookShop.ServiceCollectionExtensions
+namespace BookShop.Bootstrap
 {
     internal static class ServiceCollectionExtensions
     {
@@ -36,10 +36,7 @@ namespace BookShop.ServiceCollectionExtensions
             var massTransitConfig = new MassTransitConfiguration();
             configuration.GetSection("MassTransit").Bind(massTransitConfig);
 
-            services.AddScoped(isp =>
-            {
-                return massTransitConfig;
-            });
+            services.AddScoped(_ => massTransitConfig);
 
             services.AddMassTransit(config => {
 
