@@ -15,4 +15,8 @@
     <ProjectReference Include="..\BookExternalAPI.Core\BookExternalAPI.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="..\.dockerignore" />
+  </ItemGroup>
+
 </Project>

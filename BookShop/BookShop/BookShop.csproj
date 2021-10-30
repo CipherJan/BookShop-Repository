@@ -32,4 +32,8 @@
     <ProjectReference Include="..\BookShop.Services\BookShop.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="..\.dockerignore" />
+  </ItemGroup>
+
 </Project>
