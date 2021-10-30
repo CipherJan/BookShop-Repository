@@ -1,16 +1,16 @@
 version: '3.5'
-services:
 
-  book_external_api:
-    image: ${DOCKER_REGISTRY-}book_external_api
-    container_name: "book_external_api" 
+services:
+  book_shop:
+    image: ${DOCKER_REGISTRY-}book_shop
+    container_name: "book_shop" 
     build:
-      context: ./BookExternalAPI/
-      dockerfile: BookExternalAPI/Dockerfile
+      context: ./BookShop/
+      dockerfile: BookShop/Dockerfile
     environment:
     - ASPNETCORE_ENVIRONMENT=Development
     ports:
-      - "5010:80"
+      - "5000:80"
     networks:
     - bookshop-network
 
@@ -28,9 +28,76 @@ services:
     networks:
     - bookshop-network
 
+  book_external_api:
+    image: ${DOCKER_REGISTRY-}book_external_api
+    container_name: "book_external_api" 
+    build:
+      context: ./BookExternalAPI/
+      dockerfile: BookExternalAPI/Dockerfile
+    environment:
+    - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5200:80"
+    networks:
+    - bookshop-network
+
+  mssql:
+    image: "mcr.microsoft.com/mssql/server:2019-latest"
+    container_name: "mssql" 
+    ports: 
+      - "1433:1433"
+    environment:
+    - ACCEPT_EULA=Y
+    - SA_PASSWORD=2wsx2WSX
+    networks:
+    - dev-local
+    restart: always 
+
+  rabbitmq:
+    image: "rabbitmq:3.9-management"
+    hostname: "rabbitmq"
+    container_name: "rabbitmq"
+    restart: always
+    ports: 
+      - "4369:4369"
+      - "5671:5671"
+      - "5672:5672"
+      - "15671:15671"
+      - "15672:15672"
+      - "25672:25672"
+    networks:
+    - dev-local
+
+  elasticsearch:
+    image: "docker.elastic.co/elasticsearch/elasticsearch-oss:7.9.2"
+    container_name: "elasticsearch"
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+    ports: 
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - dev-local
+
+  kibana:
+    image: "docker.elastic.co/kibana/kibana-oss:7.9.2"
+    container_name: "kibana"
+    depends_on:
+      - elasticsearch
+    restart: always
+    ports:
+      - "5601:5601"
+    networks:
+      - dev-local
+
 networks:
   bookshop-network:
     name: bookshop-network
+
+  dev-local:
+    driver: bridge
+    name: dev-local
     
 
 

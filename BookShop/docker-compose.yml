@@ -1,18 +1,6 @@
 version: '3.5'
 
 services:
-  book_shop:
-    image: ${DOCKER_REGISTRY-}book_shop
-    container_name: "book_shop" 
-    build:
-      context: .
-      dockerfile: BookShop/Dockerfile
-    environment:
-    - ASPNETCORE_ENVIRONMENT=Development
-    ports:
-      - "5000:80"
-
-
   mssql:
     image: "mcr.microsoft.com/mssql/server:2019-latest"
     container_name: "mssql" 

@@ -20,7 +20,6 @@ services:
       dockerfile: BookProvider/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - PROXY=http://book_external_api:80
     ports:
       - "5100:80"
 
