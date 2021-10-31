@@ -13,7 +13,7 @@ using BookProvider.Infrastructure.MassTransit.Interface;
 using BookProvider.Infrastructure.MassTransit;
 using BookProvider.Infrastructure.ProxyService;
 using BookProvider.Infrastructure.ProxyService.Interface;
-using System;
+using Serilog;
 
 namespace BookProvider
 {
@@ -59,6 +59,7 @@ namespace BookProvider
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BookProvider v1"));
             }
+            app.UseSerilogRequestLogging();
 
             app.UseHttpsRedirection();
 

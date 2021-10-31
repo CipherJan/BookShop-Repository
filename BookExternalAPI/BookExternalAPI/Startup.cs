@@ -28,10 +28,6 @@ namespace BookExternalAPI
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            //app.UseForwardedHeaders(new ForwardedHeadersOptions
-            //{
-            //    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-            //});
 
             if (env.IsDevelopment())
             {
@@ -39,8 +35,6 @@ namespace BookExternalAPI
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BookExternalAPI v1"));
             }
-
-            //app.UseHttpsRedirection();
 
             app.UseRouting();
 

@@ -13,10 +13,12 @@ namespace BookProvider.Bootstrap
             var massTransitConfig = new MassTransitConfiguration();
             configuration.GetSection("MassTransit").Bind(massTransitConfig);
 
-            services.AddScoped(isp =>
-            {
-                return massTransitConfig;
-            });
+            var queuqEndpoint = new QueueEndpoints();
+            configuration.GetSection("QueueEndpoints").Bind(queuqEndpoint);
+
+            services.AddScoped(_ => massTransitConfig);
+
+            services.AddScoped(_ => queuqEndpoint);
 
             services.AddMassTransit(config => {
 
@@ -30,7 +32,7 @@ namespace BookProvider.Bootstrap
                     });
                     cfg.Durable = massTransitConfig.Durable;
                     cfg.PurgeOnStartup = massTransitConfig.PurgeOnStartup;
-                    cfg.ReceiveEndpoint(massTransitConfig.ReceiveQueueName, c => {
+                    cfg.ReceiveEndpoint(queuqEndpoint.ReceiveQueueName, c => {
                         c.ConfigureConsumer<RequestConsumer>(ctx);
                     });
                 });

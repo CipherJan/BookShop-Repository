@@ -52,12 +52,20 @@ namespace BookShop.Infrastructure.EntityFramework
             await using var transaction = await Database.BeginTransactionAsync();
             var shop = await Set<Shop>().Include(s => s.Books).SingleAsync(x => x.Id == shopId);
 
-            shop.WithdrawMoney(price);
-            shop.AddBooks(books);
-            shop.SetMaxBookQuantity();
+            try
+            {
+                shop.WithdrawMoney(price);
+                shop.AddBooks(books);
+                shop.SetMaxBookQuantity();
 
-            await SaveChangesAsync();
-            await transaction.CommitAsync();
+                await SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
         public async Task<IEnumerable<Book>> GetAllBooksFromShop(int shopId)
@@ -78,19 +86,19 @@ namespace BookShop.Infrastructure.EntityFramework
             var shop = await Set<Shop>().Include(x => x.Books).SingleAsync(x => x.Id == shopId);
             var book = shop.Books.Single(b => b.Id == bookId);
 
-            if (shop.Sale.Equals(ShopSale.Active) && !book.IsNew())
+            try
             {
-                shop.PutMoney(book.DiscountPrice);
+                shop.PutMoney(book.GetCurrentPrice(shop.Sale));
+                book.Sold();
+
+                await SaveChangesAsync();
+                await transaction.CommitAsync();
             }
-            else
+            catch (Exception)
             {
-                shop.PutMoney(book.Price);
+                await transaction.RollbackAsync();
+                throw;
             }
-
-            book.Sold();
-
-            await SaveChangesAsync();
-            await transaction.CommitAsync();
         }
 
         public async Task SetSaleStatusFromShop(int shopId, ShopSale sale)

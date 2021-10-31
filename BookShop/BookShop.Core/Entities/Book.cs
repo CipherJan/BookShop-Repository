@@ -61,7 +61,9 @@ namespace BookShop.Core.Entities
             ReleaseDate = model.ReleaseDate;
             Status = BookSaleStatus.Asale;
         }
+
         public bool IsNew() => DateTime.Now < ReleaseDate.AddYears(1);
         public void Sold() => Status = BookSaleStatus.Sold;
+        public double GetCurrentPrice(ShopSale sale) => sale.Equals(ShopSale.Active) && !IsNew() ? DiscountPrice : Price;
     }
 }

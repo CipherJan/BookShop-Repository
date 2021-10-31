@@ -36,6 +36,11 @@ namespace BookShop.Bootstrap
             var massTransitConfig = new MassTransitConfiguration();
             configuration.GetSection("MassTransit").Bind(massTransitConfig);
 
+            var queuqEndpoint = new QueueEndpoints();
+            configuration.GetSection("QueueEndpoints").Bind(queuqEndpoint);
+
+            services.AddScoped(_ => queuqEndpoint);
+
             services.AddScoped(_ => massTransitConfig);
 
             services.AddMassTransit(config => {
@@ -51,7 +56,7 @@ namespace BookShop.Bootstrap
                     cfg.Durable = massTransitConfig.Durable;
                     cfg.PurgeOnStartup = massTransitConfig.PurgeOnStartup;
                     
-                    cfg.ReceiveEndpoint(massTransitConfig.ReceiveQueueName, c => {
+                    cfg.ReceiveEndpoint(queuqEndpoint.ReceiveQueueName, c => {
                         c.ConfigureConsumer<ResponseConsumer>(ctx);
                     });
                 });

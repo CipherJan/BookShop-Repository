@@ -14,8 +14,6 @@ using BookShop.Infrastructure.MassTransit.Interface;
 using BookShop.Services;
 using BookShop.Services.Interfaces.Services;
 
-
-
 namespace BookShop
 {
     public class Startup
