@@ -1,3 +1,4 @@
+using FluentValidation.AspNetCore;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,6 +10,7 @@ using Serilog;
 using System.Text.Json.Serialization;
 using BookShop.Bootstrap;
 using BookShop.Infrastructure.EntityFramework;
+using BookShop.Infrastructure.FluentValidation;
 using BookShop.Infrastructure.MassTransit;
 using BookShop.Infrastructure.MassTransit.Interface;
 using BookShop.Services;
@@ -32,7 +34,12 @@ namespace BookShop
                 {
                     var enumConverter = new JsonStringEnumConverter();
                     opts.JsonSerializerOptions.Converters.Add(enumConverter);
+                }).AddFluentValidation(fv =>
+                {
+                    fv.RegisterValidatorsFromAssemblyContaining<ShopModelValidator>();
+                    fv.RegisterValidatorsFromAssemblyContaining<BookModelValidator>();
                 });
+
             services.AddHttpClient();
             
             services.AddScoped<IShopService, ShopService>();

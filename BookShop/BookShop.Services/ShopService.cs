@@ -44,7 +44,7 @@ namespace BookShop.Services
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception, "Failed to add store {@Request}", model);
+                _logger.LogError(exception, "Failed to add store {@Model}", model);
                 return Result.Fail;
             }
         }
@@ -109,6 +109,21 @@ namespace BookShop.Services
             catch (Exception exception)
             {
                 _logger.LogError(exception, $"Unable to purchase book with Id: {bookId} from shop with Id {shopId}");
+                return Result.Fail;
+            }
+        }
+
+        public async Task<Result> PutMoneyToShop(int shopId, double sum)
+        {
+            try
+            {
+                var database = _factory.GetContext();
+                await database.PutMoneyToShop(shopId, sum);
+                return Result.Success;
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(exception, $"Failed to top up the balance of the store with Id {shopId}");
                 return Result.Fail;
             }
         }
@@ -189,11 +204,11 @@ namespace BookShop.Services
             }
             catch (InsufficientFundsOnBalanceException exception)
             {
-                _logger.LogError("There are not enough funds on the balance {@Request}", exception);
+                _logger.LogError(exception, "There are not enough funds on the balance");
             }
             catch (Exception exception)
             {
-                _logger.LogError("Failed to restock books", exception);
+                _logger.LogError(exception, "Failed to restock books");
             }
         }
     }

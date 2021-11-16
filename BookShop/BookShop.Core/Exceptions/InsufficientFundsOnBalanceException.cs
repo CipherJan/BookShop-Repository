@@ -2,7 +2,8 @@
 
 namespace BookShop.Core.Exceptions
 {
-    public class InsufficientFundsOnBalanceException : Exception
+    [Serializable]
+    public class InsufficientFundsOnBalanceException : ApplicationException
     {
         public int ShopId { get; private set; }
         public double BalanceInShop { get; private set; }

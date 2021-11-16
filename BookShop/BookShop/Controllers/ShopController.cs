@@ -68,6 +68,12 @@ namespace BookShop.Controllers
             return await _shopService.CreateBooksDeliveryRequest(shopId, numberOfBooks);
         }
 
+        [HttpPost("/put-money")]
+        public async Task<Result> PutMoney(int shopId, uint sum)
+        {
+            return await _shopService.PutMoneyToShop(shopId, sum);
+        }
+
         [HttpPost("/start-sale/{shopId}")]
         public async Task<Result> StartSale(int shopId)
         {

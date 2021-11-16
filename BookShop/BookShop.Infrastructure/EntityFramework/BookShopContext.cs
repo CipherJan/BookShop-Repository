@@ -50,10 +50,11 @@ namespace BookShop.Infrastructure.EntityFramework
         public async Task AddSeveralBooksToShop(int shopId, double price, List<Book> books)
         {
             await using var transaction = await Database.BeginTransactionAsync();
-            var shop = await Set<Shop>().Include(s => s.Books).SingleAsync(x => x.Id == shopId);
 
             try
             {
+                var shop = await Set<Shop>().Include(s => s.Books).SingleAsync(x => x.Id == shopId);
+
                 shop.WithdrawMoney(price);
                 shop.AddBooks(books);
                 shop.SetMaxBookQuantity();
@@ -83,11 +84,12 @@ namespace BookShop.Infrastructure.EntityFramework
         public async Task BuyBookFromShop(Guid bookId, int shopId)
         {
             await using var transaction = await Database.BeginTransactionAsync();
-            var shop = await Set<Shop>().Include(x => x.Books).SingleAsync(x => x.Id == shopId);
-            var book = shop.Books.Single(b => b.Id == bookId);
 
             try
             {
+                var shop = await Set<Shop>().Include(x => x.Books).SingleAsync(x => x.Id == shopId);
+                var book = shop.Books.Single(b => b.Id == bookId);
+
                 shop.PutMoney(book.GetCurrentPrice(shop.Sale));
                 book.Sold();
 
@@ -99,6 +101,26 @@ namespace BookShop.Infrastructure.EntityFramework
                 await transaction.RollbackAsync();
                 throw;
             }
+        }
+
+        public async Task PutMoneyToShop(int shopId, double sum)
+        {
+            await using var transaction = await Database.BeginTransactionAsync();
+            try
+            {
+                var shop = await Set<Shop>().SingleAsync(x => x.Id == shopId);
+
+                shop.PutMoney(sum);
+                
+                await SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+
         }
 
         public async Task SetSaleStatusFromShop(int shopId, ShopSale sale)

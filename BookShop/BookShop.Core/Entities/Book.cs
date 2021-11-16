@@ -9,7 +9,11 @@ namespace BookShop.Core.Entities
     {
         private double _discountPrice;
         private double _price;
-        
+
+        public bool IsNew() => DateTime.Now < ReleaseDate.AddYears(1);
+        public void Sold() => Status = BookSaleStatus.Sold;
+        public double GetCurrentPrice(ShopSale sale) => sale.Equals(ShopSale.Active) && !IsNew() ? DiscountPrice : Price;
+
         public Guid Id { get; private set; }
         public string Title { get; private set; }
         public string Author { get; private set; }
@@ -61,9 +65,5 @@ namespace BookShop.Core.Entities
             ReleaseDate = model.ReleaseDate;
             Status = BookSaleStatus.Asale;
         }
-
-        public bool IsNew() => DateTime.Now < ReleaseDate.AddYears(1);
-        public void Sold() => Status = BookSaleStatus.Sold;
-        public double GetCurrentPrice(ShopSale sale) => sale.Equals(ShopSale.Active) && !IsNew() ? DiscountPrice : Price;
     }
 }
