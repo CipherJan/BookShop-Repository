@@ -10,7 +10,7 @@ using Serilog;
 using System.Text.Json.Serialization;
 using BookShop.Bootstrap;
 using BookShop.Infrastructure.EntityFramework;
-using BookShop.Infrastructure.FluentValidation;
+using BookShop.FluentValidation;
 using BookShop.Infrastructure.MassTransit;
 using BookShop.Infrastructure.MassTransit.Interface;
 using BookShop.Services;
@@ -38,6 +38,7 @@ namespace BookShop
                 {
                     fv.RegisterValidatorsFromAssemblyContaining<ShopModelValidator>();
                     fv.RegisterValidatorsFromAssemblyContaining<BookModelValidator>();
+                    fv.RegisterValidatorsFromAssemblyContaining<UpdateShopBalanceModelValidator>();
                 });
 
             services.AddHttpClient();

@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BookShop.Core.Entities;
 using BookShop.Core.Models.BookModel;
 using FluentValidation;
 
-namespace BookShop.Infrastructure.FluentValidation
+namespace BookShop.FluentValidation
 {
     public class BookModelValidator : AbstractValidator<BookModel>
     {

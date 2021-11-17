@@ -69,9 +69,9 @@ namespace BookShop.Controllers
         }
 
         [HttpPost("/put-money")]
-        public async Task<Result> PutMoney(int shopId, uint sum)
+        public async Task<Result> PutMoney(UpdateShopBalanceModel updateBalanceModel)
         {
-            return await _shopService.PutMoneyToShop(shopId, sum);
+            return await _shopService.PutMoneyToShop(updateBalanceModel);
         }
 
         [HttpPost("/start-sale/{shopId}")]

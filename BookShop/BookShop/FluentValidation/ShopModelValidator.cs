@@ -1,7 +1,7 @@
 ﻿using BookShop.Core.Models.ShopModel;
 using FluentValidation;
 
-namespace BookShop.Infrastructure.FluentValidation
+namespace BookShop.FluentValidation
 {
     public class ShopModelValidator : AbstractValidator<ShopModel>
     {

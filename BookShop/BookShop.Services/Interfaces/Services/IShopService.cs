@@ -17,7 +17,7 @@ namespace BookShop.Services.Interfaces.Services
         Task<IEnumerable<BookModelState>> GetAllBooksFromShop(int shopId);
         Task<BookModelState> GetBookFromShop(Guid bookId, int shopId);
         Task<Result> BuyBookFromShop(Guid bookId, int shopId);
-        Task<Result> PutMoneyToShop(int shopId, double sum);
+        Task<Result> PutMoneyToShop(UpdateShopBalanceModel updateBalanceModel);
         Task<Result> StartSale(int shopId);
         Task<Result> CompleteSale(int shopId);
         

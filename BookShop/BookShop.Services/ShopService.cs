@@ -113,17 +113,17 @@ namespace BookShop.Services
             }
         }
 
-        public async Task<Result> PutMoneyToShop(int shopId, double sum)
+        public async Task<Result> PutMoneyToShop(UpdateShopBalanceModel updateBalanceModel)
         {
             try
             {
                 var database = _factory.GetContext();
-                await database.PutMoneyToShop(shopId, sum);
+                await database.PutMoneyToShop(updateBalanceModel.ShopId, updateBalanceModel.Amount);
                 return Result.Success;
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception, $"Failed to top up the balance of the store with Id {shopId}");
+                _logger.LogError(exception, $"Failed to top up the balance of the store with Id {updateBalanceModel.ShopId}");
                 return Result.Fail;
             }
         }
