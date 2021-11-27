@@ -65,9 +65,7 @@ services:
     ports:
       - "5000:8080"
     depends_on:
-    - rabbitmq
     - mssql
-    - elasticsearch
     - book_provider
     networks:
     - bookshop-network

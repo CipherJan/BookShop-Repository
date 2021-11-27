@@ -11,11 +11,7 @@ namespace BookShop.Core.Entities
     public class Shop
     {
         private const double MinimumCountOfBooksInPercent = 0.1;
-        
-        public bool CheckYouNeedBooks() => MinimumCountOfBooksInPercent > GetNumberOfBooksAsPercentage;
-
-        public int GetNumberOfBooksToOrder() => MaxBookQuantity - Books.Count;
-        
+           
         public int Id { get; private set; }
         public string Name { get; private set; }
         public ShopSale Sale { get; private set; }
@@ -76,7 +72,17 @@ namespace BookShop.Core.Entities
         {
             Sale = sale;
         }
-        
+
+        public bool CheckYouNeedBooks()
+        {
+            return MinimumCountOfBooksInPercent > GetNumberOfBooksAsPercentage;
+        }
+
+        public int GetNumberOfBooksToOrder()
+        {
+            return MaxBookQuantity - Books.Count;
+        }
+
         private double GetNumberOfBooksAsPercentage => Math.Round((double)Books.Count / MaxBookQuantity, 2);
     }
 }
