@@ -1,6 +1,6 @@
 # Book-Shop Repository
 
-The system consists of 4 microservices:
+The system consists of 3 microservices and MassTransit contract:
 1. BookShop;
 2. BookProvider;
 3. BookExternalAPI;
@@ -48,17 +48,17 @@ It is the main microservice that allows you to create and manage bookstores and 
 
 ## BookProvider
 
-- Receives messages via RabbitMQ ordering new books.
-- Makes a HTTP request to BookExternalAPI
-- Sends response via RabbitMQ with new book s
+- Receives messages via RabbitMQ ordering new books;
+- Makes a HTTP request to BookExternalAPI;
+- Sends response via RabbitMQ with new books.
 
 #### Technologies&Libs:
 - RabbitMQ, MassTransit;
-- Serilog, ElasticSearch
+- Serilog, ElasticSearch.
 
 ## BookExternalAPI
 
-This app provides a set of random books in response to an HTTP request
+This app provides a set of random books in response to an HTTP request.
 
 ## BookContractLibrary
 
